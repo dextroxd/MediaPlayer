@@ -6,19 +6,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.view.View;
-public class MainActivity extends AppCompatActivity {
+import android.widget.Toast;
 
+public class MainActivity extends AppCompatActivity {
+    MediaPlayer mediaPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.song);
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.song);
         Button button = findViewById(R.id.button_play);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
                 if(mediaPlayer.isPlaying()!=true)
                     mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+
+                        Toast.makeText(MainActivity.this,"I'm done",Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
         });
@@ -45,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
 
     }
 }
