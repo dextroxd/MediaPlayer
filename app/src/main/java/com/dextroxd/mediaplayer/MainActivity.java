@@ -9,25 +9,38 @@ import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.song);
+        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.song);
         Button button = findViewById(R.id.button_play);
         button.setOnClickListener(new View.OnClickListener() {
+
+
             public void onClick(View v)
             {
-                if(mediaPlayer.isPlaying()!=true)
-                    mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
+                if(!mediaPlayer.isPlaying())
+                {       mediaPlayer.start();
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+                    {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
 
-                        Toast.makeText(MainActivity.this,"I'm done",Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            if (mediaPlayer != null) {
+                                mediaPlayer.release();
+                                mediaPlayer = null;
+                            }
+                        }
+
+                    });
+                }
+                else
+                {
+                    mediaPlayer.pause();
+                }
+
 
             }
         });
@@ -35,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         buttonpa.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                if(mediaPlayer.isPlaying()==true)
+                if(mediaPlayer.isPlaying())
                     mediaPlayer.pause();
 
             }
@@ -44,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         binc.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                if(mediaPlayer.isPlaying()==true)
+                if(mediaPlayer.isPlaying())
                 {
 
                     int a =mediaPlayer.getCurrentPosition();
@@ -56,5 +69,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mediaPlayer!=null)
+        {
+            mediaPlayer.release();
+            mediaPlayer = null;
+            
+        }
     }
 }
